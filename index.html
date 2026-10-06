@@ -107,107 +107,16 @@ body,.page{direction:ltr}
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
-const MD_URL = "https://raw.githubusercontent.com/BKHSHNDH/IELTS-WRITING-ARTICLE-TO-WRITING-SYSTEM/main/IELTS%20WRITING%20%C2%B7%20ARTICLE-TO-WRITING%20SYSTEM.md";
-const roadmap=[
-{id:"s01",n:"01",title:"WRITING TASK STARTING POINT"},
-{id:"s02",n:"02",title:"PRE-WRITING QUESTION ANALYSIS"},
-{id:"s03",n:"03",title:"TASK-COMPLETION CHECK"},
-{id:"s04",n:"04",title:"SEARCH & RESEARCH PREPARATION"},
-{id:"s05",n:"05",title:"ARTICLE / SOURCE SELECTION"},
-{id:"s06",n:"06",title:"ARTICLE UNDERSTANDING & KNOWLEDGE EXTRACTION"},
-{id:"s07",n:"07",title:"FACT → IDEA"},
-{id:"s08",n:"08",title:"EVIDENCE → EXPLANATION"},
-{id:"s09",n:"09",title:"ARGUMENT DEVELOPMENT"},
-{id:"s10",n:"10",title:"POSITION BUILDING"},
-{id:"s11",n:"11",title:"PARAGRAPH DEVELOPMENT"},
-{id:"s12",n:"12",title:"ESSAY CONSTRUCTION"},
-{id:"s13",n:"13",title:"FINAL CHECK"}];
-
+const MD_URL="https://raw.githubusercontent.com/BKHSHNDH/IELTS-WRITING-ARTICLE-TO-WRITING-SYSTEM/main/IELTS%20WRITING%20%C2%B7%20ARTICLE-TO-WRITING%20SYSTEM.md";
+const roadmap=[{id:"s01",n:"01",title:"WRITING TASK STARTING POINT"},{id:"s02",n:"02",title:"PRE-WRITING QUESTION ANALYSIS"},{id:"s03",n:"03",title:"TASK-COMPLETION CHECK"},{id:"s04",n:"04",title:"SEARCH & RESEARCH PREPARATION"},{id:"s05",n:"05",title:"ARTICLE / SOURCE SELECTION"},{id:"s06",n:"06",title:"ARTICLE UNDERSTANDING & KNOWLEDGE EXTRACTION"},{id:"s07",n:"07",title:"FACT → IDEA"},{id:"s08",n:"08",title:"EVIDENCE → EXPLANATION"},{id:"s09",n:"09",title:"ARGUMENT DEVELOPMENT"},{id:"s10",n:"10",title:"POSITION BUILDING"},{id:"s11",n:"11",title:"PARAGRAPH DEVELOPMENT"},{id:"s12",n:"12",title:"ESSAY CONSTRUCTION"},{id:"s13",n:"13",title:"FINAL CHECK"}];
 function norm(s){return s.toLowerCase().replace(/[–—]/g,"-").replace(/→/g,"->").replace(/[^a-z0-9\s\-#]/g," ").replace(/\s+/g," ").trim();}
-function splitBlocks(md){
- const lines=md.replace(/\r/g,"").split("\n"), blocks=[]; let cur=[];
- for(const line of lines){
-  if(/^#\s+/.test(line)&&cur.some(x=>x.trim())){blocks.push(cur.join("\n").trim());cur=[line];}
-  else cur.push(line);
- }
- if(cur.some(x=>x.trim())) blocks.push(cur.join("\n").trim());
- return blocks.filter(Boolean);
-}
-function heading(block){const m=block.match(/^#\s+(.+)$/m);return m?m[1].replace(/[*_`]/g,"").trim():"";}
-
-function classify(block){
- const h=heading(block).trim(), hn=norm(h);
- if(/cambridge\s*21/.test(hn)) return "cambridge";
- if(!h && /^\|\s*ref\./i.test(block)) return "s05";
- if(hn.includes("writing task")&&hn.includes("starting point")) return "s01";
- if(hn==="pre-writing question analysis") return "s02";
- if(hn==="task-completion checklist") return "s03";
- if(hn.includes("learning tip")||hn.includes("your search road map")) return "s04";
- if(hn.includes("idea extraction road map")||hn.includes("how to extract writing ideas")||hn.includes("complete transfer process")||hn.includes("article -> writing transfer tree")||hn.includes("practice worksheet")) return "s06";
- if(hn==="5. article-specific writing prompts"||hn==="6. my writing idea") return "s07";
- if(hn==="7. evidence -> explanation") return "s08";
- if(hn==="8. build my argument") return "s09";
- if(hn==="9. my position") return "s10";
- if(hn==="10. paragraph plan") return "s11";
- if(hn.includes("evidence -> explanation")||hn.includes("evidence")) return "s08";
- if(hn.includes("build my argument")||hn.includes("argument")) return "s09";
- if(hn.includes("my position")||hn.includes("position")) return "s10";
- if(hn.includes("paragraph plan")||hn.includes("paragraph")) return "s11";
- if(hn.includes("essay construction")||hn.includes("essay")) return "s12";
- if(hn.includes("final check")) return "s13";
- if(hn.includes("article -> writing")){
-   if(/fact|writing prompts|final transfer|guided answer/.test(hn)) return "s07";
-   return "s06";
- }
- if(hn.includes("final transfer")||hn.includes("guided answer worksheet")||hn.includes("article-specific writing prompts")||hn.includes("writing idea")) return "s07";
- return "s06";
-}
-
-function directionForText(s){
- const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
- const en=(s.match(/[A-Za-z]/g)||[]).length;
- return fa&&!en?"rtl":(!fa&&en?"ltr":(fa>en*.35?"rtl":"ltr"));
-}
-function decorate(root){
- root.querySelectorAll("h1,h2,h3,h4,h5,h6,p,li,blockquote,th,td").forEach(el=>{
-  const t=el.textContent.trim();if(!t)return;
-  const d=directionForText(t);el.classList.remove("rtl","ltr");el.classList.add(d);el.dir=d;
- });
- root.querySelectorAll("ul,ol").forEach(x=>x.classList.toggle("rtl-list",directionForText(x.textContent)==="rtl"));
-}
-function renderBlock(block){
- const holder=document.createElement("div");
- let html=marked.parse(block,{gfm:true,breaks:true});
- html=html.replace(/<table>/g,'<div class="table-wrap"><table>').replace(/<\/table>/g,'</table></div>');
- holder.innerHTML=html;decorate(holder);return holder.innerHTML;
-}
-async function init(){
- const main=document.getElementById("main");
- try{
-  const res=await fetch(MD_URL,{cache:"no-store"});if(!res.ok)throw new Error("Markdown file could not be loaded.");
-  const blocks=splitBlocks(await res.text());
-  const groups=Object.fromEntries(roadmap.map(x=>[x.id,[]])),cambridge=[];
-  for(const block of blocks){const id=classify(block);id==="cambridge"?cambridge.push(block):groups[id].push(block);}
-  main.innerHTML="";const toc=document.getElementById("toc");toc.innerHTML="";
-  for(const s of roadmap){
-   const sec=document.createElement("section");sec.className="system-section";sec.id=s.id;
-   sec.innerHTML='<div class="section-head"><div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div></div>';
-   const body=document.createElement("div");body.className="content";
-   body.innerHTML=groups[s.id].length?groups[s.id].map(renderBlock).join("<hr>"):'<p class="source-note">No source block was mapped to this stage.</p>';
-   if(s.id==="s13"&&!groups.s13.length) body.innerHTML='<div class="source-note"><strong>FINAL CHECK</strong><p>The current Markdown source has no standalone section titled “FINAL CHECK”. Its final-gate checklist is contained in <em>Task-Completion Checklist</em> under Step 03, and all of that source content is preserved there.</p></div>';
-   sec.appendChild(body);main.appendChild(sec);
-   const a=document.createElement("a");a.href="#"+s.id;a.textContent=s.n+" · "+s.title;toc.appendChild(a);
-  }
-  const cam=document.createElement("section");cam.className="system-section cambridge";cam.id="cambridge21";
-  cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+(cambridge.length?cambridge.map(renderBlock).join("<hr>"):"<p>No Cambridge 21 material is currently identified in the Markdown source.</p>")+"</div>";
-  main.appendChild(cam);
-  const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);
-  const links=[...toc.querySelectorAll("a")];
-  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.hash==="#"+e.target.id));}),{rootMargin:"-20% 0px -65% 0px"});
-  document.querySelectorAll(".system-section").forEach(x=>obs.observe(x));
- }catch(err){main.innerHTML='<div class="system-section"><div class="error"><strong>Unable to load the Markdown source.</strong><br>'+String(err.message).replace(/</g,"&lt;")+"</div></div>";}
-}
-init();
+function splitBlocks(md){const lines=md.replace(/\r/g,"").split("\n"),blocks=[],pre=[];let cur=null;for(const line of lines){if(/^#\s+/.test(line)){if(cur){blocks.push(cur.join("\n").trim())}else if(pre.some(x=>x.trim())){blocks.push(pre.join("\n").trim())}cur=[line]}else{if(cur)cur.push(line);else pre.push(line)}}if(cur&&cur.some(x=>x.trim()))blocks.push(cur.join("\n").trim());return blocks.filter(Boolean);}
+function heading(block){const m=block.match(/^#\s+(.+)$/m);return m?m[1].replace(/[*_]/g,"").trim():"";}
+function classify(block){const h=heading(block),n=norm(h);if(!h)return"s05";if(/cambridge\s*21/.test(n))return"cambridge";if(n.includes("writing task")&&n.includes("starting point"))return"s01";if(n==="pre-writing question analysis")return"s02";if(n==="task-completion checklist")return"s03";if(n==="learning tip"||n==="your search road map")return"s04";if(n==="how to extract writing ideas from an authentic article"||n==="idea extraction road map"||n==="the complete transfer process"||n==="worked example from article -> writing idea -> argument"||n==="article -> writing transfer tree"||n==="practice worksheet")return"s06";if(n==="final transfer"||n==="separate article facts from personal ideas"||n==="fact vs idea check"||n==="article-specific writing prompts"||n==="5. article-specific writing prompts"||n==="6. my writing idea")return"s07";if(n==="7. evidence -> explanation")return"s08";if(n==="8. build my argument")return"s09";if(n==="9. my position")return"s10";if(n==="10. paragraph plan")return"s11";return"s06";}
+function directionForText(s){const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length,en=(s.match(/[A-Za-z]/g)||[]).length;return fa&&!en?"rtl":!fa&&en?"ltr":fa>en*.35?"rtl":"ltr";}
+function decorateBidi(root){root.querySelectorAll("h1,h2,h3,h4,h5,h6,p,li,blockquote,th,td").forEach(el=>{const t=el.textContent.trim();if(!t)return;const d=directionForText(t);el.classList.remove("rtl","ltr");el.classList.add(d);el.setAttribute("dir",d)});root.querySelectorAll("ul,ol").forEach(x=>x.classList.toggle("rtl-list",directionForText(x.textContent)==="rtl"));}
+function renderBlock(block){const holder=document.createElement("div");let html=marked.parse(block,{gfm:true,breaks:true});html=html.replace(/<table>/g,'<div class="table-wrap"><table>').replace(/<\/table>/g,'</table></div>');holder.innerHTML=html;decorateBidi(holder);return holder.innerHTML;}
+async function init(){const main=document.getElementById("main");try{const res=await fetch(MD_URL,{cache:"no-store"});if(!res.ok)throw new Error("Markdown file could not be loaded.");const blocks=splitBlocks(await res.text()),groups=Object.fromEntries(roadmap.map(x=>[x.id,[]])),cambridge=[];for(const block of blocks){const id=classify(block);if(id==="cambridge")cambridge.push(block);else groups[id].push(block)}main.innerHTML="";const toc=document.getElementById("toc");toc.innerHTML="";for(const s of roadmap){const sec=document.createElement("section");sec.className="system-section";sec.id=s.id;sec.innerHTML='<div class="section-head"><div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div></div>';const body=document.createElement("div");body.className="content";body.innerHTML=groups[s.id].length?groups[s.id].map(renderBlock).join("<hr>"):'<p class="source-note">No standalone source block exists for this stage in the Markdown file.</p>';sec.appendChild(body);main.appendChild(sec);const a=document.createElement("a");a.href="#"+s.id;a.textContent=s.n+" · "+s.title;toc.appendChild(a)}const cam=document.createElement("section");cam.className="system-section cambridge";cam.id="cambridge21";cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+(cambridge.length?cambridge.map(renderBlock).join("<hr>"):'<p class="source-note">No Cambridge 21 section exists in the current Markdown source.</p>')+'</div>';main.appendChild(cam);const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);const links=[...toc.querySelectorAll("a")];const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-20% 0px -65% 0px"});document.querySelectorAll(".system-section").forEach(x=>obs.observe(x))}catch(err){main.innerHTML='<div class="system-section"><div class="error"><strong>Unable to load the Markdown source.</strong><br>'+String(err.message).replace(/</g,"&lt;")+'</div></div>'}}init();
 </script>
 </body>
 </html>
