@@ -11,20 +11,6 @@
 html{scroll-behavior:smooth}
 body{margin:0;background:linear-gradient(135deg,#f4f8f5,#edf4ef);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.75}
 body,.page{direction:ltr}
-html{direction:ltr}
-.content{unicode-bidi:plaintext}
-.content [dir="rtl"]{direction:rtl;text-align:right;unicode-bidi:plaintext}
-.content [dir="ltr"]{direction:ltr;text-align:left;unicode-bidi:plaintext}
-.content .rtl{direction:rtl;text-align:right;unicode-bidi:plaintext}
-.content .ltr{direction:ltr;text-align:left;unicode-bidi:plaintext}
-.content .mixed{unicode-bidi:plaintext}
-.content h1,.content h2,.content h3,.content h4,.content p,.content li,.content blockquote{unicode-bidi:plaintext}
-.content ul,.content ol{padding-left:27px;padding-right:27px}
-.content.rtl-list ul,.content.rtl-list ol{direction:rtl;text-align:right;padding-right:27px;padding-left:0}
-.content.rtl-table table{direction:rtl}
-.content.rtl-table th,.content.rtl-table td{text-align:right}
-.content.ltr-table table{direction:ltr}
-.content.ltr-table th,.content.ltr-table td{text-align:left}
 .wrap{max-width:1320px;margin:0 auto;padding:28px 20px 80px}
 .hero{position:relative;background:linear-gradient(135deg,#0f6a49,#16835b);color:#fff;border-radius:26px;padding:46px 40px;margin-bottom:22px;box-shadow:0 18px 45px rgba(15,106,73,.18);overflow:hidden}
 .hero:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-110px;top:-140px}
@@ -42,7 +28,13 @@ html{direction:ltr}
 .num{flex:0 0 auto;width:50px;height:50px;border-radius:15px;background:var(--soft);color:var(--accent2);display:grid;place-items:center;font-weight:900;font-size:15px}
 .section-head h2{margin:2px 0 0;color:#123b2a;font-size:27px;line-height:1.25}
 .section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
-.content{direction:inherit;text-align:inherit;unicode-bidi:plaintext}
+.content{direction:ltr;text-align:left;unicode-bidi:plaintext}
+.content .rtl{direction:rtl;text-align:right;unicode-bidi:plaintext}
+.content .ltr{direction:ltr;text-align:left;unicode-bidi:plaintext}
+.content h1,.content h2,.content h3,.content h4,.content p,.content li,.content blockquote,.content th,.content td{unicode-bidi:plaintext}
+.content ul,.content ol{padding-left:27px;padding-right:27px}
+.content .rtl-list{direction:rtl;text-align:right;padding-right:27px;padding-left:0}
+
 .content h1,.content h2,.content h3,.content h4{text-align:left;color:#123b2a;line-height:1.3;margin-top:1.6em}
 .content h1{font-size:30px;border-bottom:1px solid var(--line);padding-bottom:9px}
 .content h2{font-size:25px}
@@ -58,7 +50,7 @@ html{direction:ltr}
 .content pre{overflow:auto;background:#10251c;color:#e9f5ef;padding:16px;border-radius:14px}
 .table-wrap{overflow-x:auto;margin:18px 0}
 .content table{width:100%;border-collapse:collapse;min-width:620px}
-.content th,.content td{vertical-align:top;border:1px solid var(--line);padding:10px 12px;text-align:inherit}
+.content th,.content td{vertical-align:top;border:1px solid var(--line);padding:10px 12px;text-align:left}
 .content th{background:#edf6f1;color:#123b2a;font-weight:750}
 .content tr:nth-child(even) td{background:#fafcfb}
 .content a{color:var(--accent2);font-weight:650}
@@ -80,7 +72,7 @@ html{direction:ltr}
 .meta{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}.toc nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}}
 @media(max-width:600px){.wrap{padding:14px 10px 55px}.hero{padding:30px 22px;border-radius:19px}.system-section{padding:24px 18px;border-radius:18px}.section-head h2{font-size:23px}.logo{width:60px;height:60px;right:12px;top:12px}.logo-name{font-size:5px}.logo-mb{font-size:18px}.top{left:12px;bottom:14px;width:42px;height:42px;font-size:22px}.toc nav{grid-template-columns:1fr}}
-.roadmap-block{margin:18px 0 28px;padding:24px 26px;background:#f7faf8;border:1px solid var(--line);border-radius:16px;overflow:auto}.roadmap-block h2{margin:0 0 18px!important;color:#123b2a!important}.roadmap-tree{font-family:"Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.7;white-space:pre;min-width:max-content}.roadmap-line{white-space:pre}.roadmap-line.ltr{text-align:left}.roadmap-line.rtl{text-align:right}</style>
+</style>
 </head>
 <body id="top">
 <div class="logo" aria-label="Mohammad Bakhshandeh">
@@ -116,215 +108,101 @@ html{direction:ltr}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 const MD_URL = "https://raw.githubusercontent.com/BKHSHNDH/IELTS-WRITING-ARTICLE-TO-WRITING-SYSTEM/main/IELTS%20WRITING%20%C2%B7%20ARTICLE-TO-WRITING%20SYSTEM.md";
+const roadmap=[
+{id:"s01",n:"01",title:"WRITING TASK STARTING POINT"},
+{id:"s02",n:"02",title:"PRE-WRITING QUESTION ANALYSIS"},
+{id:"s03",n:"03",title:"TASK-COMPLETION CHECK"},
+{id:"s04",n:"04",title:"SEARCH & RESEARCH PREPARATION"},
+{id:"s05",n:"05",title:"ARTICLE / SOURCE SELECTION"},
+{id:"s06",n:"06",title:"ARTICLE UNDERSTANDING & KNOWLEDGE EXTRACTION"},
+{id:"s07",n:"07",title:"FACT → IDEA"},
+{id:"s08",n:"08",title:"EVIDENCE → EXPLANATION"},
+{id:"s09",n:"09",title:"ARGUMENT DEVELOPMENT"},
+{id:"s10",n:"10",title:"POSITION BUILDING"},
+{id:"s11",n:"11",title:"PARAGRAPH DEVELOPMENT"},
+{id:"s12",n:"12",title:"ESSAY CONSTRUCTION"},
+{id:"s13",n:"13",title:"FINAL CHECK"}];
 
-const roadmap = [
- {id:"s01",n:"01",title:"WRITING TASK STARTING POINT",keys:["starting point","actual writing question","write the exact task","identify the topic","identify the task instruction"]},
- {id:"s02",n:"02",title:"PRE-WRITING QUESTION ANALYSIS",keys:["pre-writing question analysis","what do i need to know","break the topic into issues","build my search questions"]},
- {id:"s03",n:"03",title:"TASK-COMPLETION CHECK",keys:["task-completion checklist","task-completion check","final gate","ready to search"]},
- {id:"s04",n:"04",title:"SEARCH & RESEARCH PREPARATION",keys:["search preparation","search road map","search with a purpose","cambridge reading sources","research","one search, two benefits"]},
- {id:"s05",n:"05",title:"ARTICLE / SOURCE SELECTION",keys:["source selection","authentic sources","source / organisation","relevant, credible","is the source relevant"]},
- {id:"s06",n:"06",title:"ARTICLE UNDERSTANDING & KNOWLEDGE EXTRACTION",keys:["how to extract writing ideas","understand the article","extract knowledge","article understanding","collect knowledge","article facts","knowledge"]},
- {id:"s07",n:"07",title:"FACT → IDEA",keys:["fact vs idea","fact → idea","article-specific writing prompts","generate possible writing ideas","my writing idea","my ideas"]},
- {id:"s08",n:"08",title:"EVIDENCE → EXPLANATION",keys:["evidence → explanation","evidence","connection","explanation","mechanism","significance","qualification"]},
- {id:"s09",n:"09",title:"ARGUMENT DEVELOPMENT",keys:["argument development","develop the argument","possible argument","what?","why?","how?","result?","example?"]},
- {id:"s10",n:"10",title:"POSITION BUILDING",keys:["position building","your position","my position","what do i believe","add your own thinking","other side"]},
- {id:"s11",n:"11",title:"PARAGRAPH DEVELOPMENT",keys:["paragraph plan","paragraph development","ielts paragraph","main idea","development","link to the question"]},
- {id:"s12",n:"12",title:"ESSAY CONSTRUCTION",keys:["essay construction","writing plan","full essay","conclusion","thesis","body paragraph"]},
- {id:"s13",n:"13",title:"FINAL CHECK",keys:["final check","final quality","quality check","task response","coherence","lexical resource","grammatical range"]}
-];
-
-function norm(s){return s.toLowerCase().replace(/[–—]/g,"-").replace(/→/g,"->").replace(/[^a-z0-9\s\-#]/g," ").replace(/\s+/g," ").trim();}
-
+function norm(s){return s.toLowerCase().replace(/[–—]/g,"-").replace(/→/g,"->").replace(/[^a-z0-9\\s\\-#]/g," ").replace(/\\s+/g," ").trim();}
 function splitBlocks(md){
-  const lines=md.replace(/\r/g,"").split("\n");
-  const blocks=[]; let cur=[];
-  for(const line of lines){
-    if(/^#{1,6}\s+/.test(line) && cur.some(x=>x.trim())){
-      blocks.push(cur.join("\n").trim());
-      cur=[line];
-    }else cur.push(line);
-  }
-  if(cur.some(x=>x.trim())) blocks.push(cur.join("\n").trim());
-  return blocks.filter(Boolean);
+ const lines=md.replace(/\\r/g,"").split("\\n"), blocks=[]; let cur=[];
+ for(const line of lines){
+  if(/^#{1,6}\\s+/.test(line)&&cur.some(x=>x.trim())){blocks.push(cur.join("\\n").trim());cur=[line];}
+  else cur.push(line);
+ }
+ if(cur.some(x=>x.trim())) blocks.push(cur.join("\\n").trim());
+ return blocks.filter(Boolean);
 }
-function headingOf(block){
-  const m=block.match(/^#{1,6}\s+(.+)$/m);
-  return m ? m[1].replace(/[*_`]/g,"").trim() : "";
-}
+function heading(block){const m=block.match(/^#{1,6}\\s+(.+)$/m);return m?m[1].replace(/[*_]/g,"").trim():"";}
+const maps=[
+ ["s01",["writing task starting point","where does the process begin","write the exact task","identify the topic","complete starting point"]],
+ ["s02",["pre-writing question analysis","before you search","read the question","identify the question type","break the topic into issues","build my search questions"]],
+ ["s03",["task-completion checklist","final gate","question understanding","issue analysis","knowledge check","ready for article"]],
+ ["s04",["learning tip","one search, two benefits","your search road map","search preparation","search with a purpose","start with cambridge reading sources"]],
+ ["s05",["article / source selection","source selection","authentic sources","source / organisation","is the source relevant"]],
+ ["s06",["how to extract writing ideas from an authentic article","idea extraction road map","understand","notice the issues","collect knowledge","extract useful knowledge","article understanding","knowledge"]],
+ ["s07",["separate article facts from personal ideas","fact vs idea check","article-specific writing prompts","generate possible writing ideas","my writing idea","fact -> idea check","develop your own idea"]],
+ ["s08",["evidence -> explanation","evidence","connection","explanation","mechanism","significance","qualification"]],
+ ["s09",["argument development","develop the argument","build my argument","possible argument","what?","why?","how?","result?","example?"]],
+ ["s10",["position building","my position","your position","add your own thinking","what do i believe"]],
+ ["s11",["paragraph plan","paragraph development","turn it into an ielts paragraph","main idea","development","final link to the question"]],
+ ["s12",["essay construction","writing plan","full essay","introduction","body paragraph","conclusion","thesis"]],
+ ["s13",["final check","final quality check","quality check","final checklist"]]
+];
 function classify(block){
-  const h=norm(headingOf(block)), n=norm(block);
-  if(/cambridge\s*21/.test(h) || /cambridge\s*21/.test(n)) return "cambridge";
-
-  const exact={
-    s01:["writing task starting point","starting point"],
-    s02:["pre-writing question analysis","question analysis"],
-    s03:["task-completion checklist","task-completion check","final gate"],
-    s04:["search preparation","search road map","your search road map","one search two benefits"],
-    s05:["article / source selection","source selection","authentic sources"],
-    s06:["how to extract writing ideas from an authentic article","article understanding","knowledge extraction","extract knowledge"],
-    s07:["fact vs idea check","fact vs idea","article-specific writing prompts","my writing idea","generate my idea"],
-    s08:["evidence explanation","evidence -> explanation"],
-    s09:["argument development","build my argument","develop the argument"],
-    s10:["position building","my position","your position","add your own thinking"],
-    s11:["paragraph plan","paragraph development"],
-    s12:["essay construction"],
-    s13:["final check","final quality check"]
-  };
-  for(const id in exact){
-    if(exact[id].some(k=>h.includes(norm(k)))) return id;
-  }
-
-  const signals={
-    s01:["exact task","specific issue","task instruction","question type","scope / limits","initial understanding"],
-    s02:["what is the question really about","what am i being asked to do","break the topic into issues","what do i already know","what do i need to know","turn knowledge gaps into questions"],
-    s03:["do i understand the topic","do i understand the task","have i identified the relevant issues","am i ready to search"],
-    s04:["build search questions","build search terms","search broadly","narrow the search","trace cambridge sources","find authentic sources","search road map"],
-    s05:["is the source relevant","is it authentic","does it address my question","what aspect does it help me understand","what is my purpose for reading","source / organisation"],
-    s06:["understand the article","find the connection","identify relevant information","extract article facts","collect knowledge","read with a purpose"],
-    s07:["what does the article say","what do i think","fact vs idea","benefit / problem","other side","my interpretation","my writing idea"],
-    s08:["evidence","connection","explanation","mechanism","result","significance","qualification"],
-    s09:["argument","why","how","evidence / example","explanation","result","qualification"],
-    s10:["what do i believe","strongest argument","other side","how strongly do i agree","my position"],
-    s11:["main idea","development / mechanism","explanation of evidence","link to question","paragraph plan"],
-    s12:["essay construction","introduction","body paragraph","conclusion","thesis"],
-    s13:["final check","task response","coherence","lexical resource","grammatical range"]
-  };
-  let best="s04", bestScore=0;
-  for(const id in signals){
-    let sc=0;
-    for(const k of signals[id]){
-      const nk=norm(k);
-      if(nk && n.includes(nk)) sc += nk.length>12 ? 5 : 2;
-    }
-    if(sc>bestScore){best=id;bestScore=sc;}
-  }
-  if(!headingOf(block) && /source organisation|original text article|source link|status/.test(n)) return "s05";
-  return best;
+ const h=norm(heading(block)), n=norm(block);
+ if(/cambridge\\s*21/.test(h)) return "cambridge";
+ for(const [id,keys] of maps) if(keys.some(k=>h.includes(norm(k)))) return id;
+ let best="s04",bs=0;
+ for(const [id,keys] of maps){
+  let sc=0;
+  for(const k of keys){const x=norm(k);if(x&&n.includes(x))sc+=x.length>12?5:2;}
+  if(sc>bs){bs=sc;best=id;}
+ }
+ return best;
 }
-
 function directionForText(s){
-  const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
-  const en=(s.match(/[A-Za-z]/g)||[]).length;
-  if(fa>0 && en===0) return "rtl";
-  if(en>0 && fa===0) return "ltr";
-  if(fa>en*0.35) return "rtl";
-  if(en>fa*0.35) return "ltr";
-  return "mixed";
+ const fa=(s.match(/[\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF]/g)||[]).length;
+ const en=(s.match(/[A-Za-z]/g)||[]).length;
+ return fa&&!en?"rtl":(!fa&&en?"ltr":(fa>en*.35?"rtl":"ltr"));
 }
-function decorateBidi(root){
-  root.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,th,td").forEach(el=>{
-    const t=el.textContent.trim();
-    if(!t) return;
-    const d=directionForText(t);
-    el.classList.remove("rtl","ltr","mixed");
-    el.classList.add(d);
-    el.setAttribute("dir",d==="rtl"?"rtl":"ltr");
-  });
-  root.querySelectorAll("ul,ol").forEach(list=>{
-    if(directionForText(list.textContent)==="rtl") list.classList.add("rtl-list");
-    else list.classList.remove("rtl-list");
-  });
-  root.querySelectorAll("table").forEach(table=>{
-    const wrap=table.closest(".table-wrap")||table.parentElement;
-    if(wrap){
-      wrap.classList.remove("rtl-table","ltr-table");
-      wrap.classList.add(directionForText(table.textContent)==="rtl"?"rtl-table":"ltr-table");
-    }
-  });
+function decorate(root){
+ root.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,th,td").forEach(el=>{
+  const t=el.textContent.trim();if(!t)return;
+  const d=directionForText(t);el.classList.remove("rtl","ltr");el.classList.add(d);el.dir=d;
+ });
+ root.querySelectorAll("ul,ol").forEach(x=>x.classList.toggle("rtl-list",directionForText(x.textContent)==="rtl"));
 }
 function renderBlock(block){
-  // Render the complete source block. Never discard text around a fenced tree.
-  // Only the specific IELTS roadmap code fence gets special visual treatment.
-  const roadmapRe=/^(##\\s+🌳\\s+IELTS WRITING · ARTICLE-TO-WRITING SYSTEM[\\s\\S]*?)$/im;
-  if(roadmapRe.test(block)){
-    const fenceRe=/\\`\\`\\`[\\s\\S]*?\\n([\\s\\S]*?)\\n\\`\\`\\`/;
-    const fm=block.match(fenceRe);
-    if(fm){
-      const before=block.slice(0,fm.index);
-      const after=block.slice((fm.index||0)+fm[0].length);
-      let beforeHtml=before.trim()?marked.parse(before,{gfm:true,breaks:true}):"";
-      let afterHtml=after.trim()?marked.parse(after,{gfm:true,breaks:true}):"";
-      const lines=fm[1].split("\\n");
-      const tree=lines.map(line=>{
-        const safe=line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-        return '<div class="roadmap-line ltr" dir="ltr">'+safe+'</div>';
-      }).join("");
-      const holder=document.createElement("div");
-      holder.innerHTML=beforeHtml+
-        '<div class="roadmap-block"><div class="roadmap-tree">'+tree+'</div></div>'+
-        afterHtml;
-      decorateBidi(holder);
-      return holder.innerHTML;
-    }
-  }
-  let html=marked.parse(block,{gfm:true,breaks:true});
-  html=html.replace(/<table>/g,'<div class="table-wrap"><table>')
-           .replace(/<\\/table>/g,'</table></div>');
-  const holder=document.createElement("div");
-  holder.innerHTML=html;
-  decorateBidi(holder);
-  return holder.innerHTML;
+ const holder=document.createElement("div");
+ let html=marked.parse(block,{gfm:true,breaks:true});
+ html=html.replace(/<table>/g,'<div class="table-wrap"><table>').replace(/<\\/table>/g,'</table></div>');
+ holder.innerHTML=html;decorate(holder);return holder.innerHTML;
 }
-
-function sectionIntro(id){
-  const x=roadmap.find(s=>s.id===id);
-  return x ? x.title : "";
-}
-
 async function init(){
-  const main=document.getElementById("main");
-  try{
-    const res=await fetch(MD_URL,{cache:"no-store"});
-    if(!res.ok) throw new Error("Markdown file could not be loaded.");
-    const md=await res.text();
-    const blocks=splitBlocks(md);
-    const groups=Object.fromEntries(roadmap.map(s=>[s.id,[]]));
-    let cambridge=[];
-    for(const b of blocks){
-      const c=classify(b);
-      if(c==="cambridge") cambridge.push(b); else groups[c].push(b);
-    }
-
-    // Put the source/reference bank with research/source work.
-    if(groups.s05.length===0 && groups.s04.length) groups.s05.push(...groups.s04.splice(Math.max(0,groups.s04.length-1)));
-
-    main.innerHTML="";
-    const toc=document.getElementById("toc");
-    toc.innerHTML="";
-
-    for(const s of roadmap){
-      const sec=document.createElement("section");
-      sec.className="system-section";
-      sec.id=s.id;
-      const head=document.createElement("div");
-      head.className="section-head";
-      head.innerHTML='<div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div>';
-      const body=document.createElement("div");
-      body.className="content";
-      if(groups[s.id].length){
-        body.innerHTML=groups[s.id].map(renderBlock).join('<hr>');
-      }else{
-        body.innerHTML='<p class="source-note">No source material was mapped to this stage.</p>';
-      }
-      sec.append(head,body); main.appendChild(sec); decorateBidi(body);
-
-      const a=document.createElement("a");
-      a.href="#"+s.id; a.textContent=s.n+" · "+s.title; toc.appendChild(a);
-    }
-
-    const cam=document.createElement("section");
-    cam.className="system-section cambridge";
-    cam.id="cambridge21";
-    cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+ (cambridge.length ? cambridge.map(renderBlock).join("<hr>") : '<p>No Cambridge 21 material is currently identified in the Markdown source. This area is intentionally kept separate and ready for the Cambridge 21 materials.</p>') +'</div>';
-    main.appendChild(cam); decorateBidi(cam.querySelector(".content"));
-    const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);
-
-    const links=[...toc.querySelectorAll("a")];
-    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));}}),{rootMargin:"-20% 0px -65% 0px"});
-    document.querySelectorAll(".system-section").forEach(x=>obs.observe(x));
-  }catch(err){
-    main.innerHTML='<div class="system-section"><div class="error"><strong>Unable to load the Markdown source.</strong><br>'+err.message+'</div></div>';
+ const main=document.getElementById("main");
+ try{
+  const res=await fetch(MD_URL,{cache:"no-store"});if(!res.ok)throw new Error("Markdown file could not be loaded.");
+  const blocks=splitBlocks(await res.text());
+  const groups=Object.fromEntries(roadmap.map(x=>[x.id,[]])),cambridge=[];
+  for(const block of blocks){const id=classify(block);id==="cambridge"?cambridge.push(block):groups[id].push(block);}
+  main.innerHTML="";const toc=document.getElementById("toc");toc.innerHTML="";
+  for(const s of roadmap){
+   const sec=document.createElement("section");sec.className="system-section";sec.id=s.id;
+   sec.innerHTML='<div class="section-head"><div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div></div>';
+   const body=document.createElement("div");body.className="content";
+   body.innerHTML=groups[s.id].length?groups[s.id].map(renderBlock).join("<hr>"):'<p class="source-note">No source block was mapped to this stage.</p>';
+   sec.appendChild(body);main.appendChild(sec);
+   const a=document.createElement("a");a.href="#"+s.id;a.textContent=s.n+" · "+s.title;toc.appendChild(a);
   }
+  const cam=document.createElement("section");cam.className="system-section cambridge";cam.id="cambridge21";
+  cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+(cambridge.length?cambridge.map(renderBlock).join("<hr>"):"<p>No Cambridge 21 material is currently identified in the Markdown source.</p>")+"</div>";
+  main.appendChild(cam);
+  const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);
+  const links=[...toc.querySelectorAll("a")];
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.hash==="#"+e.target.id));}),{rootMargin:"-20% 0px -65% 0px"});
+  document.querySelectorAll(".system-section").forEach(x=>obs.observe(x));
+ }catch(err){main.innerHTML='<div class="system-section"><div class="error"><strong>Unable to load the Markdown source.</strong><br>'+String(err.message).replace(/</g,"&lt;")+"</div></div>";}
 }
 init();
 </script>
