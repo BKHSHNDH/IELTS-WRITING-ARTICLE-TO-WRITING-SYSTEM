@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="IELTS Writing Task 2 — Article-to-Writing System">
+<title>✍️ IELTS Writing · Article-to-Writing System</title>
+<style>
+:root{--bg:#f4f7f5;--card:#fff;--text:#17211b;--muted:#5f6f65;--line:#dfe7e1;--accent:#16835b;--accent2:#0f6a49;--soft:#edf6f1;--shadow:0 12px 35px rgba(20,50,35,.07)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(135deg,#f4f8f5,#edf4ef);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.75}
+body,.page{direction:ltr}
+.wrap{max-width:1320px;margin:0 auto;padding:28px 20px 80px}
+.hero{position:relative;background:linear-gradient(135deg,#0f6a49,#16835b);color:#fff;border-radius:26px;padding:46px 40px;margin-bottom:22px;box-shadow:0 18px 45px rgba(15,106,73,.18);overflow:hidden}
+.hero:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-110px;top:-140px}
+.hero h1{margin:0 0 10px;font-size:clamp(30px,4vw,48px);line-height:1.15;letter-spacing:-.5px}
+.hero p{margin:0;opacity:.9;font-size:17px;max-width:780px}
+.hero .path{margin-top:18px;font-size:13px;opacity:.75;letter-spacing:.08em;text-transform:uppercase}
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:22px;align-items:start}
+.toc{position:sticky;top:18px;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
+.toc-title{font-weight:800;color:#123b2a;padding:8px 10px 12px}
+.toc a{display:block;text-decoration:none;color:var(--muted);padding:9px 10px;border-radius:10px;font-size:13px;line-height:1.35}
+.toc a:hover,.toc a.active{background:var(--soft);color:var(--accent2);font-weight:750}
+.main{min-width:0}
+.system-section{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:32px 34px;margin-bottom:20px;box-shadow:var(--shadow);scroll-margin-top:18px}
+.section-head{display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+.num{flex:0 0 auto;width:50px;height:50px;border-radius:15px;background:var(--soft);color:var(--accent2);display:grid;place-items:center;font-weight:900;font-size:15px}
+.section-head h2{margin:2px 0 0;color:#123b2a;font-size:27px;line-height:1.25}
+.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.content{direction:ltr;text-align:left;unicode-bidi:plaintext}
+.content h1,.content h2,.content h3,.content h4{text-align:left;color:#123b2a;line-height:1.3;margin-top:1.6em}
+.content h1{font-size:30px;border-bottom:1px solid var(--line);padding-bottom:9px}
+.content h2{font-size:25px}
+.content h3{font-size:20px}
+.content h4{font-size:17px}
+.content p{margin:13px 0}
+.content ul,.content ol{padding-left:27px}
+.content li{margin:4px 0}
+.content strong{color:#0d6848}
+.content blockquote{margin:18px 0;padding:14px 18px;border-left:4px solid var(--accent);background:#f1f7f3;border-radius:0 12px 12px 0}
+.content hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+.content code{background:#eef4f0;padding:2px 6px;border-radius:6px;font-size:.92em}
+.content pre{overflow:auto;background:#10251c;color:#e9f5ef;padding:16px;border-radius:14px}
+.table-wrap{overflow-x:auto;margin:18px 0}
+.content table{width:100%;border-collapse:collapse;min-width:620px}
+.content th,.content td{vertical-align:top;border:1px solid var(--line);padding:10px 12px;text-align:left}
+.content th{background:#edf6f1;color:#123b2a;font-weight:750}
+.content tr:nth-child(even) td{background:#fafcfb}
+.content a{color:var(--accent2);font-weight:650}
+.content input[type=checkbox]{accent-color:var(--accent)}
+.cambridge{background:linear-gradient(135deg,#123b2a,#0f6a49);color:#fff;border:0}
+.cambridge .section-head{border-color:rgba(255,255,255,.18)}
+.cambridge .section-head h2,.cambridge .section-head p{color:#fff}
+.cambridge .num{background:rgba(255,255,255,.14);color:#fff}
+.source-note{font-size:13px;color:var(--muted);margin:4px 0 24px}
+.loading{padding:30px;text-align:center;color:var(--muted)}
+.error{padding:20px;border-radius:14px;background:#fff0f0;color:#8a2d2d;border:1px solid #efcccc}
+.logo{position:fixed;right:22px;top:22px;width:72px;height:72px;z-index:2000;filter:drop-shadow(0 8px 18px rgba(15,106,73,.2))}
+.logo svg{width:100%;height:100%;display:block}
+.logo-bg{fill:rgba(255,255,255,.97);stroke:var(--accent);stroke-width:2.5}
+.logo-name{font-family:Arial,sans-serif;font-size:5.2px;font-weight:800;letter-spacing:1.1px;fill:var(--accent2);text-transform:uppercase}
+.logo-mb{font-family:Arial,sans-serif;font-size:17px;font-weight:900;letter-spacing:2px;fill:var(--accent2)}
+.top{position:fixed;left:22px;bottom:22px;width:46px;height:46px;z-index:2000;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#123b2a;color:#fff;text-decoration:none;font-size:25px;font-weight:700;box-shadow:0 8px 22px rgba(18,59,42,.25);transition:.2s}
+.top:hover{transform:translateY(-3px);background:var(--accent)}
+.meta{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}.toc nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}}
+@media(max-width:600px){.wrap{padding:14px 10px 55px}.hero{padding:30px 22px;border-radius:19px}.system-section{padding:24px 18px;border-radius:18px}.section-head h2{font-size:23px}.logo{width:60px;height:60px;right:12px;top:12px}.logo-name{font-size:5px}.logo-mb{font-size:18px}.top{left:12px;bottom:14px;width:42px;height:42px;font-size:22px}.toc nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body id="top">
+<div class="logo" aria-label="Mohammad Bakhshandeh">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs><path id="namePath" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0"/></defs>
+<circle cx="50" cy="50" r="48" class="logo-bg"/>
+<text class="logo-name"><textPath href="#namePath" startOffset="50%" text-anchor="middle">Mohammad Bakhshandeh</textPath></text>
+<text x="50" y="57" text-anchor="middle" class="logo-mb">MB</text>
+</svg>
+</div>
+
+<div class="wrap">
+<header class="hero">
+<h1>✍️ IELTS WRITING TASK 2</h1>
+<p>ARTICLE → KNOWLEDGE → IDEA → ARGUMENT → POSITION → WRITING</p>
+<div class="path">IELTS Writing · Article-to-Writing System</div>
+</header>
+
+<div class="layout">
+<aside class="toc">
+<div class="toc-title">SYSTEM ROADMAP</div>
+<nav id="toc"></nav>
+</aside>
+<main class="main" id="main">
+<div class="loading">Loading the Markdown system…</div>
+</main>
+</div>
+<div class="meta">Content source: IELTS WRITING · ARTICLE-TO-WRITING SYSTEM.md</div>
+</div>
+
+<a class="top" href="#top" aria-label="Back to top">↑</a>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const MD_URL = "https://raw.githubusercontent.com/BKHSHNDH/IELTS-WRITING-ARTICLE-TO-WRITING-SYSTEM/main/IELTS%20WRITING%20%C2%B7%20ARTICLE-TO-WRITING%20SYSTEM.md";
+
+const roadmap = [
+ {id:"s01",n:"01",title:"WRITING TASK STARTING POINT",keys:["starting point","actual writing question","write the exact task","identify the topic","identify the task instruction"]},
+ {id:"s02",n:"02",title:"PRE-WRITING QUESTION ANALYSIS",keys:["pre-writing question analysis","what do i need to know","break the topic into issues","build my search questions"]},
+ {id:"s03",n:"03",title:"TASK-COMPLETION CHECK",keys:["task-completion checklist","task-completion check","final gate","ready to search"]},
+ {id:"s04",n:"04",title:"SEARCH & RESEARCH PREPARATION",keys:["search preparation","search road map","search with a purpose","cambridge reading sources","research","one search, two benefits"]},
+ {id:"s05",n:"05",title:"ARTICLE / SOURCE SELECTION",keys:["source selection","authentic sources","source / organisation","relevant, credible","is the source relevant"]},
+ {id:"s06",n:"06",title:"ARTICLE UNDERSTANDING & KNOWLEDGE EXTRACTION",keys:["how to extract writing ideas","understand the article","extract knowledge","article understanding","collect knowledge","article facts","knowledge"]},
+ {id:"s07",n:"07",title:"FACT → IDEA",keys:["fact vs idea","fact → idea","article-specific writing prompts","generate possible writing ideas","my writing idea","my ideas"]},
+ {id:"s08",n:"08",title:"EVIDENCE → EXPLANATION",keys:["evidence → explanation","evidence","connection","explanation","mechanism","significance","qualification"]},
+ {id:"s09",n:"09",title:"ARGUMENT DEVELOPMENT",keys:["argument development","develop the argument","possible argument","what?","why?","how?","result?","example?"]},
+ {id:"s10",n:"10",title:"POSITION BUILDING",keys:["position building","your position","my position","what do i believe","add your own thinking","other side"]},
+ {id:"s11",n:"11",title:"PARAGRAPH DEVELOPMENT",keys:["paragraph plan","paragraph development","ielts paragraph","main idea","development","link to the question"]},
+ {id:"s12",n:"12",title:"ESSAY CONSTRUCTION",keys:["essay construction","writing plan","full essay","conclusion","thesis","body paragraph"]},
+ {id:"s13",n:"13",title:"FINAL CHECK",keys:["final check","final quality","quality check","task response","coherence","lexical resource","grammatical range"]}
+];
+
+function norm(s){return s.toLowerCase().replace(/[–—]/g,"-").replace(/→/g,"->").replace(/[^a-z0-9\s\-#]/g," ").replace(/\s+/g," ").trim();}
+function splitBlocks(md){
+  const lines=md.replace(/\r/g,"").split("\n");
+  const blocks=[]; let cur=[];
+  for(const line of lines){
+    if(/^#\s+/.test(line) && cur.length){blocks.push(cur.join("\n").trim());cur=[line];}
+    else cur.push(line);
+  }
+  if(cur.length) blocks.push(cur.join("\n").trim());
+  return blocks.filter(Boolean);
+}
+function score(block, section){
+  const t=norm(block.slice(0,2500));
+  let score=0;
+  for(const k of section.keys){
+    const nk=norm(k);
+    if(!nk) continue;
+    if(t.includes(nk)) score += nk.length > 12 ? 7 : 3;
+  }
+  return score;
+}
+function classify(block){
+  const n=norm(block);
+  if(/cambridge\s*21/.test(n)) return "cambridge";
+  let best=roadmap[3], bestScore=-1;
+  for(const s of roadmap){
+    const sc=score(block,s);
+    if(sc>bestScore){best=s;bestScore=sc;}
+  }
+  return best.id;
+}
+function stripDuplicateSectionHead(md){
+  return md.replace(/^#\s+.+\n?/,"");
+}
+function renderBlock(block){
+  let html=marked.parse(block);
+  html=html.replace(/<table>/g,'<div class="table-wrap"><table>').replace(/<\/table>/g,'</table></div>');
+  return html;
+}
+function sectionIntro(id){
+  const x=roadmap.find(s=>s.id===id);
+  return x ? x.title : "";
+}
+async function init(){
+  const main=document.getElementById("main");
+  try{
+    const res=await fetch(MD_URL,{cache:"no-store"});
+    if(!res.ok) throw new Error("Markdown file could not be loaded.");
+    const md=await res.text();
+    const blocks=splitBlocks(md);
+    const groups=Object.fromEntries(roadmap.map(s=>[s.id,[]]));
+    let cambridge=[];
+    for(const b of blocks){
+      const c=classify(b);
+      if(c==="cambridge") cambridge.push(b); else groups[c].push(b);
+    }
+
+    // Put the source/reference bank with research/source work.
+    if(groups.s05.length===0 && groups.s04.length) groups.s05.push(...groups.s04.splice(Math.max(0,groups.s04.length-1)));
+
+    main.innerHTML="";
+    const toc=document.getElementById("toc");
+    toc.innerHTML="";
+
+    for(const s of roadmap){
+      const sec=document.createElement("section");
+      sec.className="system-section";
+      sec.id=s.id;
+      const head=document.createElement("div");
+      head.className="section-head";
+      head.innerHTML='<div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div>';
+      const body=document.createElement("div");
+      body.className="content";
+      if(groups[s.id].length){
+        body.innerHTML=groups[s.id].map(renderBlock).join('<hr>');
+      }else{
+        body.innerHTML='<p class="source-note">This stage is reserved in the learning architecture. Its related material will appear here as the source file grows.</p>';
+      }
+      sec.append(head,body); main.appendChild(sec);
+
+      const a=document.createElement("a");
+      a.href="#"+s.id; a.textContent=s.n+" · "+s.title; toc.appendChild(a);
+    }
+
+    const cam=document.createElement("section");
+    cam.className="system-section cambridge";
+    cam.id="cambridge21";
+    cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+ (cambridge.length ? cambridge.map(renderBlock).join("<hr>") : '<p>No Cambridge 21 material is currently identified in the Markdown source. This area is intentionally kept separate and ready for the Cambridge 21 materials.</p>') +'</div>';
+    main.appendChild(cam);
+    const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);
+
+    const links=[...toc.querySelectorAll("a")];
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));}}),{rootMargin:"-20% 0px -65% 0px"});
+    document.querySelectorAll(".system-section").forEach(x=>obs.observe(x));
+  }catch(err){
+    main.innerHTML='<div class="system-section"><div class="error"><strong>Unable to load the Markdown source.</strong><br>'+err.message+'</div></div>';
+  }
+}
+init();
+</script>
+</body>
+</html>
