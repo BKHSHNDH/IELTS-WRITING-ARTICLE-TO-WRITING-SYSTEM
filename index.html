@@ -80,7 +80,7 @@ html{direction:ltr}
 .meta{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.toc{position:relative;top:auto}.toc nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}}
 @media(max-width:600px){.wrap{padding:14px 10px 55px}.hero{padding:30px 22px;border-radius:19px}.system-section{padding:24px 18px;border-radius:18px}.section-head h2{font-size:23px}.logo{width:60px;height:60px;right:12px;top:12px}.logo-name{font-size:5px}.logo-mb{font-size:18px}.top{left:12px;bottom:14px;width:42px;height:42px;font-size:22px}.toc nav{grid-template-columns:1fr}}
-</style>
+.roadmap-block{margin:18px 0 28px;padding:24px 26px;background:#f7faf8;border:1px solid var(--line);border-radius:16px;overflow:auto}.roadmap-block h2{margin:0 0 18px!important;color:#123b2a!important}.roadmap-tree{font-family:"Cascadia Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.7;white-space:pre;min-width:max-content}.roadmap-line{white-space:pre}.roadmap-line.ltr{text-align:left}.roadmap-line.rtl{text-align:right}</style>
 </head>
 <body id="top">
 <div class="logo" aria-label="Mohammad Bakhshandeh">
@@ -233,6 +233,22 @@ function decorateBidi(root){
   });
 }
 function renderBlock(block){
+  // The roadmap is intentionally stored in the Markdown as a fenced text tree.
+  // Render that exact tree as readable HTML instead of letting Markdown treat it
+  // as an opaque code block.
+  if(/##\s+🌳\s+IELTS WRITING · ARTICLE-TO-WRITING SYSTEM/i.test(block)){
+    const m=block.match(/\n\`\`\`[\s\S]*?\n([\s\S]*?)\n\`\`\`/);
+    if(m){
+      const title=(block.match(/^##\s+(.+)$/m)||[])[1]||"IELTS WRITING · ARTICLE-TO-WRITING SYSTEM";
+      const lines=m[1].split("\n");
+      const tree=lines.map(line=>{
+        const safe=line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+        const rtl=/[\u0600-\u06FF]/.test(line);
+        return '<div class="roadmap-line '+(rtl?'rtl':'ltr')+'" dir="'+(rtl?'rtl':'ltr')+'">'+safe+'</div>';
+      }).join("");
+      return '<div class="roadmap-block"><h2 class="ltr" dir="ltr">'+title.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</h2><div class="roadmap-tree">'+tree+'</div></div>';
+    }
+  }
   let html=marked.parse(block,{gfm:true,breaks:true});
   html=html.replace(/<table>/g,'<div class="table-wrap"><table>')
            .replace(/<\/table>/g,'</table></div>');
