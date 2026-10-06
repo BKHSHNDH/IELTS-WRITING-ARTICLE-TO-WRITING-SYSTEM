@@ -233,25 +233,33 @@ function decorateBidi(root){
   });
 }
 function renderBlock(block){
-  // The roadmap is intentionally stored in the Markdown as a fenced text tree.
-  // Render that exact tree as readable HTML instead of letting Markdown treat it
-  // as an opaque code block.
-  if(/##\s+🌳\s+IELTS WRITING · ARTICLE-TO-WRITING SYSTEM/i.test(block)){
-    const m=block.match(/\n\`\`\`[\s\S]*?\n([\s\S]*?)\n\`\`\`/);
-    if(m){
-      const title=(block.match(/^##\s+(.+)$/m)||[])[1]||"IELTS WRITING · ARTICLE-TO-WRITING SYSTEM";
-      const lines=m[1].split("\n");
+  // Render the complete source block. Never discard text around a fenced tree.
+  // Only the specific IELTS roadmap code fence gets special visual treatment.
+  const roadmapRe=/^(##\\s+🌳\\s+IELTS WRITING · ARTICLE-TO-WRITING SYSTEM[\\s\\S]*?)$/im;
+  if(roadmapRe.test(block)){
+    const fenceRe=/\\`\\`\\`[\\s\\S]*?\\n([\\s\\S]*?)\\n\\`\\`\\`/;
+    const fm=block.match(fenceRe);
+    if(fm){
+      const before=block.slice(0,fm.index);
+      const after=block.slice((fm.index||0)+fm[0].length);
+      let beforeHtml=before.trim()?marked.parse(before,{gfm:true,breaks:true}):"";
+      let afterHtml=after.trim()?marked.parse(after,{gfm:true,breaks:true}):"";
+      const lines=fm[1].split("\\n");
       const tree=lines.map(line=>{
         const safe=line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-        const rtl=/[\u0600-\u06FF]/.test(line);
-        return '<div class="roadmap-line '+(rtl?'rtl':'ltr')+'" dir="'+(rtl?'rtl':'ltr')+'">'+safe+'</div>';
+        return '<div class="roadmap-line ltr" dir="ltr">'+safe+'</div>';
       }).join("");
-      return '<div class="roadmap-block"><h2 class="ltr" dir="ltr">'+title.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</h2><div class="roadmap-tree">'+tree+'</div></div>';
+      const holder=document.createElement("div");
+      holder.innerHTML=beforeHtml+
+        '<div class="roadmap-block"><div class="roadmap-tree">'+tree+'</div></div>'+
+        afterHtml;
+      decorateBidi(holder);
+      return holder.innerHTML;
     }
   }
   let html=marked.parse(block,{gfm:true,breaks:true});
   html=html.replace(/<table>/g,'<div class="table-wrap"><table>')
-           .replace(/<\/table>/g,'</table></div>');
+           .replace(/<\\/table>/g,'</table></div>');
   const holder=document.createElement("div");
   holder.innerHTML=html;
   decorateBidi(holder);
