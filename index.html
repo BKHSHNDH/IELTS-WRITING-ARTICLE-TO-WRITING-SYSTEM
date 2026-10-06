@@ -201,11 +201,39 @@ function classify(block){
   if(!headingOf(block) && /source organisation|original text article|source link|status/.test(n)) return "s05";
   return best;
 }
-function renderBlock(block){
-  let html=marked.parse(block,{
-    gfm:true,
-    breaks:true
+
+function directionForText(s){
+  const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
+  const en=(s.match(/[A-Za-z]/g)||[]).length;
+  if(fa>0 && en===0) return "rtl";
+  if(en>0 && fa===0) return "ltr";
+  if(fa>en*0.35) return "rtl";
+  if(en>fa*0.35) return "ltr";
+  return "mixed";
+}
+function decorateBidi(root){
+  root.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,th,td").forEach(el=>{
+    const t=el.textContent.trim();
+    if(!t) return;
+    const d=directionForText(t);
+    el.classList.remove("rtl","ltr","mixed");
+    el.classList.add(d);
+    el.setAttribute("dir",d==="rtl"?"rtl":"ltr");
   });
+  root.querySelectorAll("ul,ol").forEach(list=>{
+    if(directionForText(list.textContent)==="rtl") list.classList.add("rtl-list");
+    else list.classList.remove("rtl-list");
+  });
+  root.querySelectorAll("table").forEach(table=>{
+    const wrap=table.closest(".table-wrap")||table.parentElement;
+    if(wrap){
+      wrap.classList.remove("rtl-table","ltr-table");
+      wrap.classList.add(directionForText(table.textContent)==="rtl"?"rtl-table":"ltr-table");
+    }
+  });
+}
+function renderBlock(block){
+  let html=marked.parse(block,{gfm:true,breaks:true});
   html=html.replace(/<table>/g,'<div class="table-wrap"><table>')
            .replace(/<\/table>/g,'</table></div>');
   const holder=document.createElement("div");
