@@ -134,32 +134,39 @@ function splitBlocks(md){
  return blocks.filter(Boolean);
 }
 function heading(block){const m=block.match(/^#{1,6}\s+(.+)$/m);return m?m[1].replace(/[*_]/g,"").trim():"";}
-const maps=[
- ["s01",["writing task starting point","where does the process begin","write the exact task","identify the topic","complete starting point"]],
- ["s02",["pre-writing question analysis","before you search","read the question","identify the question type","break the topic into issues","build my search questions"]],
- ["s03",["task-completion checklist","final gate","question understanding","issue analysis","knowledge check","ready for article"]],
- ["s04",["learning tip","one search, two benefits","your search road map","search preparation","search with a purpose","start with cambridge reading sources"]],
- ["s05",["article / source selection","source selection","authentic sources","source / organisation","is the source relevant"]],
- ["s06",["how to extract writing ideas from an authentic article","idea extraction road map","understand","notice the issues","collect knowledge","extract useful knowledge","article understanding","knowledge"]],
- ["s07",["separate article facts from personal ideas","fact vs idea check","article-specific writing prompts","generate possible writing ideas","my writing idea","fact -> idea check","develop your own idea"]],
- ["s08",["evidence -> explanation","evidence","connection","explanation","mechanism","significance","qualification"]],
- ["s09",["argument development","develop the argument","build my argument","possible argument","what?","why?","how?","result?","example?"]],
- ["s10",["position building","my position","your position","add your own thinking","what do i believe"]],
- ["s11",["paragraph plan","paragraph development","turn it into an ielts paragraph","main idea","development","final link to the question"]],
- ["s12",["essay construction","writing plan","full essay","introduction","body paragraph","conclusion","thesis"]],
- ["s13",["final check","final quality check","quality check","final checklist"]]
+
+const exactRoutes=[
+ ["WRITING TASK · STARTING POINT","s01"],
+ ["PRE-WRITING QUESTION ANALYSIS","s02"],
+ ["Task-Completion Checklist","s03"],
+ ["One Search, Two Benefits","s04"],
+ ["YOUR SEARCH ROAD MAP","s04"],
+ ["How to Extract Writing Ideas from an Authentic Article","s06"],
+ ["IDEA EXTRACTION ROAD MAP","s06"],
+ ["COMPLETE TRANSFER PROCESS","s06"],
+ ["THE GOLDEN RULE","s06"],
+ ["Worked Example: From Article → Writing Idea → Argument","s06"],
+ ["ARTICLE-SPECIFIC WRITING PROMPTS","s07"],
+ ["FACT vs IDEA CHECK","s07"],
+ ["SEPARATE ARTICLE FACTS FROM PERSONAL IDEAS","s07"],
+ ["EVIDENCE → EXPLANATION","s08"],
+ ["BUILD MY ARGUMENT","s09"],
+ ["ARGUMENT DEVELOPMENT","s09"],
+ ["MY POSITION","s10"],
+ ["POSITION BUILDING","s10"],
+ ["PARAGRAPH PLAN","s11"],
+ ["PARAGRAPH DEVELOPMENT","s11"],
+ ["ESSAY CONSTRUCTION","s12"],
+ ["FINAL CHECK","s13"],
+ ["FINAL QUALITY CHECK","s13"]
 ];
+
 function classify(block){
- const h=norm(heading(block)), n=norm(block);
- if(/cambridge\s*21/.test(h)) return "cambridge";
- for(const [id,keys] of maps) if(keys.some(k=>h.includes(norm(k)))) return id;
- let best="s04",bs=0;
- for(const [id,keys] of maps){
-  let sc=0;
-  for(const k of keys){const x=norm(k);if(x&&n.includes(x))sc+=x.length>12?5:2;}
-  if(sc>bs){bs=sc;best=id;}
- }
- return best;
+ const h=heading(block).trim(), hn=norm(h);
+ if(/^cambridge\s*21$/i.test(h)||/cambridge\s*21/.test(hn)) return "cambridge";
+ for(const [label,id] of exactRoutes) if(hn===norm(label)||hn.includes(norm(label))) return id;
+ if(/^R[1-4]\s*$/i.test(h)||/source\s*\/\s*organisation|original text/i.test(hn)) return "s05";
+ return "unassigned";
 }
 function directionForText(s){
  const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
@@ -167,7 +174,7 @@ function directionForText(s){
  return fa&&!en?"rtl":(!fa&&en?"ltr":(fa>en*.35?"rtl":"ltr"));
 }
 function decorate(root){
- root.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,th,td").forEach(el=>{
+ root.querySelectorAll("h1,h2,h3,h4,h5,h6,p,li,blockquote,th,td").forEach(el=>{
   const t=el.textContent.trim();if(!t)return;
   const d=directionForText(t);el.classList.remove("rtl","ltr");el.classList.add(d);el.dir=d;
  });
