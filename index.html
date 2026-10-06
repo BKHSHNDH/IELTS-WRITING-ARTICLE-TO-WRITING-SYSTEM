@@ -127,47 +127,41 @@ function norm(s){return s.toLowerCase().replace(/[–—]/g,"-").replace(/→/g,
 function splitBlocks(md){
  const lines=md.replace(/\r/g,"").split("\n"), blocks=[]; let cur=[];
  for(const line of lines){
-  if(/^#{1,6}\s+/.test(line)&&cur.some(x=>x.trim())){blocks.push(cur.join("\n").trim());cur=[line];}
+  if(/^#\s+/.test(line)&&cur.some(x=>x.trim())){blocks.push(cur.join("\n").trim());cur=[line];}
   else cur.push(line);
  }
  if(cur.some(x=>x.trim())) blocks.push(cur.join("\n").trim());
  return blocks.filter(Boolean);
 }
-function heading(block){const m=block.match(/^#{1,6}\s+(.+)$/m);return m?m[1].replace(/[*_]/g,"").trim():"";}
-
-const exactRoutes=[
- ["WRITING TASK · STARTING POINT","s01"],
- ["PRE-WRITING QUESTION ANALYSIS","s02"],
- ["Task-Completion Checklist","s03"],
- ["One Search, Two Benefits","s04"],
- ["YOUR SEARCH ROAD MAP","s04"],
- ["How to Extract Writing Ideas from an Authentic Article","s06"],
- ["IDEA EXTRACTION ROAD MAP","s06"],
- ["COMPLETE TRANSFER PROCESS","s06"],
- ["THE GOLDEN RULE","s06"],
- ["Worked Example: From Article → Writing Idea → Argument","s06"],
- ["ARTICLE-SPECIFIC WRITING PROMPTS","s07"],
- ["FACT vs IDEA CHECK","s07"],
- ["SEPARATE ARTICLE FACTS FROM PERSONAL IDEAS","s07"],
- ["EVIDENCE → EXPLANATION","s08"],
- ["BUILD MY ARGUMENT","s09"],
- ["ARGUMENT DEVELOPMENT","s09"],
- ["MY POSITION","s10"],
- ["POSITION BUILDING","s10"],
- ["PARAGRAPH PLAN","s11"],
- ["PARAGRAPH DEVELOPMENT","s11"],
- ["ESSAY CONSTRUCTION","s12"],
- ["FINAL CHECK","s13"],
- ["FINAL QUALITY CHECK","s13"]
-];
+function heading(block){const m=block.match(/^#\s+(.+)$/m);return m?m[1].replace(/[*_`]/g,"").trim():"";}
 
 function classify(block){
  const h=heading(block).trim(), hn=norm(h);
- if(/^cambridge\s*21$/i.test(h)||/cambridge\s*21/.test(hn)) return "cambridge";
- for(const [label,id] of exactRoutes) if(hn===norm(label)||hn.includes(norm(label))) return id;
- if(/^R[1-4]\s*$/i.test(h)||/source\s*\/\s*organisation|original text/i.test(hn)) return "s05";
- return "unassigned";
+ if(/cambridge\s*21/.test(hn)) return "cambridge";
+ if(hn.includes("writing task")&&hn.includes("starting point")) return "s01";
+ if(hn==="pre-writing question analysis") return "s02";
+ if(hn==="task-completion checklist") return "s03";
+ if(hn.includes("learning tip")||hn.includes("your search road map")) return "s04";
+ if(hn.includes("idea extraction road map")||hn.includes("how to extract writing ideas")||hn.includes("complete transfer process")||hn.includes("article -> writing transfer tree")||hn.includes("practice worksheet")) return "s06";
+ if(hn==="5. article-specific writing prompts"||hn==="6. my writing idea") return "s07";
+ if(hn==="7. evidence -> explanation") return "s08";
+ if(hn==="8. build my argument") return "s09";
+ if(hn==="9. my position") return "s10";
+ if(hn==="10. paragraph plan") return "s11";
+ if(hn.includes("evidence -> explanation")||hn.includes("evidence")) return "s08";
+ if(hn.includes("build my argument")||hn.includes("argument")) return "s09";
+ if(hn.includes("my position")||hn.includes("position")) return "s10";
+ if(hn.includes("paragraph plan")||hn.includes("paragraph")) return "s11";
+ if(hn.includes("essay construction")||hn.includes("essay")) return "s12";
+ if(hn.includes("final check")) return "s13";
+ if(hn.includes("article -> writing")){
+   if(/fact|writing prompts|final transfer|guided answer/.test(hn)) return "s07";
+   return "s06";
+ }
+ if(hn.includes("final transfer")||hn.includes("guided answer worksheet")||hn.includes("article-specific writing prompts")||hn.includes("writing idea")) return "s07";
+ return "s06";
 }
+
 function directionForText(s){
  const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
  const en=(s.match(/[A-Za-z]/g)||[]).length;
