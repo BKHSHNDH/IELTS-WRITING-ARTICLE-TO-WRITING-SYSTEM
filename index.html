@@ -138,6 +138,7 @@ function heading(block){const m=block.match(/^#\s+(.+)$/m);return m?m[1].replace
 function classify(block){
  const h=heading(block).trim(), hn=norm(h);
  if(/cambridge\s*21/.test(hn)) return "cambridge";
+ if(!h && /^\|\s*ref\./i.test(block)) return "s05";
  if(hn.includes("writing task")&&hn.includes("starting point")) return "s01";
  if(hn==="pre-writing question analysis") return "s02";
  if(hn==="task-completion checklist") return "s03";
@@ -193,6 +194,7 @@ async function init(){
    sec.innerHTML='<div class="section-head"><div class="num">'+s.n+'</div><div><h2>'+s.title+'</h2><p>Step '+s.n+' · student learning path</p></div></div>';
    const body=document.createElement("div");body.className="content";
    body.innerHTML=groups[s.id].length?groups[s.id].map(renderBlock).join("<hr>"):'<p class="source-note">No source block was mapped to this stage.</p>';
+   if(s.id==="s13"&&!groups.s13.length) body.innerHTML='<div class="source-note"><strong>FINAL CHECK</strong><p>The current Markdown source has no standalone section titled “FINAL CHECK”. Its final-gate checklist is contained in <em>Task-Completion Checklist</em> under Step 03, and all of that source content is preserved there.</p></div>';
    sec.appendChild(body);main.appendChild(sec);
    const a=document.createElement("a");a.href="#"+s.id;a.textContent=s.n+" · "+s.title;toc.appendChild(a);
   }
