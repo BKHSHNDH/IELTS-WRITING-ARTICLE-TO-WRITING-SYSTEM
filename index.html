@@ -11,6 +11,20 @@
 html{scroll-behavior:smooth}
 body{margin:0;background:linear-gradient(135deg,#f4f8f5,#edf4ef);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.75}
 body,.page{direction:ltr}
+html{direction:ltr}
+.content{unicode-bidi:plaintext}
+.content [dir="rtl"]{direction:rtl;text-align:right;unicode-bidi:plaintext}
+.content [dir="ltr"]{direction:ltr;text-align:left;unicode-bidi:plaintext}
+.content .rtl{direction:rtl;text-align:right;unicode-bidi:plaintext}
+.content .ltr{direction:ltr;text-align:left;unicode-bidi:plaintext}
+.content .mixed{unicode-bidi:plaintext}
+.content h1,.content h2,.content h3,.content h4,.content p,.content li,.content blockquote{unicode-bidi:plaintext}
+.content ul,.content ol{padding-left:27px;padding-right:27px}
+.content.rtl-list ul,.content.rtl-list ol{direction:rtl;text-align:right;padding-right:27px;padding-left:0}
+.content.rtl-table table{direction:rtl}
+.content.rtl-table th,.content.rtl-table td{text-align:right}
+.content.ltr-table table{direction:ltr}
+.content.ltr-table th,.content.ltr-table td{text-align:left}
 .wrap{max-width:1320px;margin:0 auto;padding:28px 20px 80px}
 .hero{position:relative;background:linear-gradient(135deg,#0f6a49,#16835b);color:#fff;border-radius:26px;padding:46px 40px;margin-bottom:22px;box-shadow:0 18px 45px rgba(15,106,73,.18);overflow:hidden}
 .hero:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(255,255,255,.13);border-radius:50%;right:-110px;top:-140px}
@@ -44,7 +58,7 @@ body,.page{direction:ltr}
 .content pre{overflow:auto;background:#10251c;color:#e9f5ef;padding:16px;border-radius:14px}
 .table-wrap{overflow-x:auto;margin:18px 0}
 .content table{width:100%;border-collapse:collapse;min-width:620px}
-.content th,.content td{vertical-align:top;border:1px solid var(--line);padding:10px 12px;text-align:left}
+.content th,.content td{vertical-align:top;border:1px solid var(--line);padding:10px 12px;text-align:inherit}
 .content th{background:#edf6f1;color:#123b2a;font-weight:750}
 .content tr:nth-child(even) td{background:#fafcfb}
 .content a{color:var(--accent2);font-weight:650}
@@ -124,14 +138,65 @@ function splitBlocks(md){
   const lines=md.replace(/\r/g,"").split("\n");
   const blocks=[]; let cur=[];
   for(const line of lines){
-    if(/^#\s+/.test(line) && cur.length){blocks.push(cur.join("\n").trim());cur=[line];}
-    else cur.push(line);
+    // Every H1 starts a new source block. H2/H3 stay with their parent block.
+    if(/^#\s+/.test(line) && cur.length){
+      blocks.push(cur.join("\n").trim());
+      cur=[line];
+    }else{
+      cur.push(line);
+    }
   }
   if(cur.length) blocks.push(cur.join("\n").trim());
   return blocks.filter(Boolean);
 }
+
+function hasPersian(s){
+  return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(s);
+}
+function hasLatin(s){
+  return /[A-Za-z]/.test(s);
+}
+function directionForText(s){
+  const fa=(s.match(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g)||[]).length;
+  const en=(s.match(/[A-Za-z]/g)||[]).length;
+  if(fa>0 && en===0) return "rtl";
+  if(en>0 && fa===0) return "ltr";
+  if(fa>en*0.35) return "rtl";
+  if(en>fa*0.35) return "ltr";
+  return "mixed";
+}
+
+function decorateBidi(root){
+  root.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,th,td").forEach(el=>{
+    const text=el.textContent.trim();
+    if(!text) return;
+    const d=directionForText(text);
+    el.classList.remove("rtl","ltr","mixed");
+    el.classList.add(d);
+    el.setAttribute("dir",d==="rtl"?"rtl":"ltr");
+  });
+
+  root.querySelectorAll("ul,ol").forEach(list=>{
+    const text=list.textContent;
+    if(directionForText(text)==="rtl"){
+      list.classList.add("rtl-list");
+    }else{
+      list.classList.remove("rtl-list");
+    }
+  });
+
+  root.querySelectorAll("table").forEach(table=>{
+    const d=directionForText(table.textContent);
+    const wrap=table.closest(".table-wrap") || table.parentElement;
+    if(wrap){
+      wrap.classList.remove("rtl-table","ltr-table");
+      wrap.classList.add(d==="rtl"?"rtl-table":"ltr-table");
+    }
+  });
+}
+
 function score(block, section){
-  const t=norm(block.slice(0,2500));
+  const t=norm(block.slice(0,5000));
   let score=0;
   for(const k of section.keys){
     const nk=norm(k);
@@ -140,6 +205,7 @@ function score(block, section){
   }
   return score;
 }
+
 function classify(block){
   const n=norm(block);
   if(/cambridge\s*21/.test(n)) return "cambridge";
@@ -150,18 +216,25 @@ function classify(block){
   }
   return best.id;
 }
-function stripDuplicateSectionHead(md){
-  return md.replace(/^#\s+.+\n?/,"");
-}
+
 function renderBlock(block){
-  let html=marked.parse(block);
-  html=html.replace(/<table>/g,'<div class="table-wrap"><table>').replace(/<\/table>/g,'</table></div>');
-  return html;
+  let html=marked.parse(block,{
+    gfm:true,
+    breaks:true
+  });
+  html=html.replace(/<table>/g,'<div class="table-wrap"><table>')
+           .replace(/<\/table>/g,'</table></div>');
+  const holder=document.createElement("div");
+  holder.innerHTML=html;
+  decorateBidi(holder);
+  return holder.innerHTML;
 }
+
 function sectionIntro(id){
   const x=roadmap.find(s=>s.id===id);
   return x ? x.title : "";
 }
+
 async function init(){
   const main=document.getElementById("main");
   try{
@@ -197,7 +270,7 @@ async function init(){
       }else{
         body.innerHTML='<p class="source-note">This stage is reserved in the learning architecture. Its related material will appear here as the source file grows.</p>';
       }
-      sec.append(head,body); main.appendChild(sec);
+      sec.append(head,body); main.appendChild(sec); decorateBidi(body);
 
       const a=document.createElement("a");
       a.href="#"+s.id; a.textContent=s.n+" · "+s.title; toc.appendChild(a);
@@ -207,7 +280,7 @@ async function init(){
     cam.className="system-section cambridge";
     cam.id="cambridge21";
     cam.innerHTML='<div class="section-head"><div class="num">C21</div><div><h2>CAMBRIDGE 21</h2><p>Separate Cambridge 21 practice area</p></div></div><div class="content"><p>Cambridge 21 is kept separate from the main 01 → 13 learning path.</p>'+ (cambridge.length ? cambridge.map(renderBlock).join("<hr>") : '<p>No Cambridge 21 material is currently identified in the Markdown source. This area is intentionally kept separate and ready for the Cambridge 21 materials.</p>') +'</div>';
-    main.appendChild(cam);
+    main.appendChild(cam); decorateBidi(cam.querySelector(".content"));
     const ca=document.createElement("a");ca.href="#cambridge21";ca.textContent="C21 · CAMBRIDGE 21";toc.appendChild(ca);
 
     const links=[...toc.querySelectorAll("a")];
